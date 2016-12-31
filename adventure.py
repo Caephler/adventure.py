@@ -4,87 +4,11 @@ adventure.py
 ------------
 simple text adventure game
 """
-from abc import ABCMeta, abstractmethod
-import time
 
-
-class Message:
-    """
-    Message
-    Message for terminal output
-    """
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def print(self):
-        """
-        print
-        Should return a printable string.
-        """
-        raise NotImplementedError()
-
-
-class StringMessage(Message):
-    """
-    StringMessage
-    Basic Message that contains a string as its message.
-    """
-
-    def __init__(self, string=""):
-        self.msg = string
-        self.timestamp = time.localtime()
-
-    def print(self):
-        return "[{0}] {1}".format(
-            time.strftime("%d-%m-%Y %H:%M", self.timestamp), self.msg)
-
-
-class MessageList:
-    """
-    MessageList
-    List of messages
-    """
-
-    def __init__(self):
-        self.__list = []
-
-    def __iter__(self):
-        return iter(self.__list)
-
-    def push(self, message):
-        """
-        MessageList.push(message)
-        Appends a Message object at the end of the list.
-        """
-        if not isinstance(message, Message):
-            raise TypeError()
-        self.__list.append(message)
-
-    def pop(self, index=None):
-        """
-        MessageList.pop(index=None)
-        Removes element at index from the list.
-        If index is not specified, last element is removed.
-        Returns element that was popped.
-        """
-        if index is None:
-            if self.length() == 0:
-                raise IndexError()
-            else:
-                index = self.length() - 1
-        elif (self.length() == 0) or (index < 0) or (index >= self.length()):
-            raise IndexError()
-
-        elem = self.__list[index]
-        self.__list = self.__list[0:index] + self.__list[index + 1:]
-        return elem
-
-    def length(self):
-        """
-        MessageList.length()
-        Returns number of messages on the list.
-        """
-        return len(self.__list)
+import os
+import messages
+import story
+import adventure_map as amap
 
 
 class Terminal:
@@ -94,21 +18,42 @@ class Terminal:
     """
 
     def __init__(self):
-        self.__msg_list = MessageList()
+        self.__msg_list = messages.MessageList(25)
+        self.story = None
+
+    def debug_get_msg_list(self):
+        """
+        debug_get_msg_list
+        Should only be used when debugging or testing to retrieve
+        the internal MessageList.
+        """
+        return self.__msg_list
+
+    def push_message_divider(self, msg=""):
+        self.__msg_list.push(messages.Divider(msg))
 
     def push_message(self, string):
-        self.__msg_list.push(StringMessage(string))
+        self.__msg_list.push(messages.StringMessage(string))
+
+    def push_map_message(self, _map):
+        self.__msg_list.push(messages.MapMessage(_map))
+
+    def use_story(self, story_inst):
+        if not isinstance(story_inst, story.Story):
+            raise TypeError()
+        self.story = story_inst
+
+    def start_story(self):
+        if self.story is None:
+            raise RuntimeError()
+        for index, chapter in enumerate(self.story.chapters):
+            chapter.add_subscriber(self)
+            chapter.chapter_start()
+            chapter.rem_subscriber(self)
+        self.push_message("You've completed all the levels!")
+        self.render()
 
     def render(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
         for msg in self.__msg_list:
             print(msg.print())
-
-
-def main():
-    term = Terminal()
-    term.push_message("Hello!")
-    term.push_message("Hiya!")
-    term.render()
-
-if __name__ == "__main__":
-    main()

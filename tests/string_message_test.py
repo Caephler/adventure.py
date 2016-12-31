@@ -6,7 +6,7 @@ Tests for StringMessage
 
 import unittest
 import re
-import adventure
+import messages
 
 
 class StringMessageTests(unittest.TestCase):
@@ -19,14 +19,14 @@ class StringMessageTests(unittest.TestCase):
         """
         StringMessage should implement the Message abstract class.
         """
-        msg = adventure.StringMessage()
-        self.assertIsInstance(msg, adventure.Message)
+        msg = messages.StringMessage()
+        self.assertIsInstance(msg, messages.Message)
 
     def test_print(self):
         """
         StringMessage should be able to print in the specified format.
         """
-        msg = adventure.StringMessage()
+        msg = messages.StringMessage()
         regex = re.compile(r'\[\d{2}-\d{2}-\d{4} \d{2}:\d{2}\] .*')
         result = regex.match(msg.print())
         self.assertTrue(result)

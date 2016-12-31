@@ -1,7 +1,7 @@
 #!python3
 
 import unittest
-import adventure
+import messages
 
 
 class MessageListTests(unittest.TestCase):
@@ -14,36 +14,38 @@ class MessageListTests(unittest.TestCase):
         """
         MessageList should initialize properly.
         """
-        msg_list = adventure.MessageList()
-        self.assertIsInstance(msg_list, adventure.MessageList)
+        msg_list = messages.MessageList()
+        msg_list_2 = messages.MessageList(25)
+        self.assertIsInstance(msg_list, messages.MessageList)
+        self.assertIsInstance(msg_list_2, messages.MessageList)
 
     def test_initial_length_equals_zero(self):
         """
         MessageList should have an initial length of 0.
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
         self.assertEqual(msg_list.length(), 0)
 
     def test_push(self):
         """
         MessageList.push(object) should only work with Message objects.
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
         self.assertRaises(TypeError, msg_list.push, "a message string")
-        msg_list.push(adventure.Message())
+        msg_list.push(messages.Message())
         self.assertEqual(msg_list.length(), 1)
 
     def test_pop_no_args(self):
         """
         MessageList.pop() should work without any arguments
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
         # Adds 5 Message objects to the list.
-        msg_list.push(adventure.StringMessage("a"))
-        msg_list.push(adventure.StringMessage("b"))
-        msg_list.push(adventure.StringMessage("c"))
-        msg_list.push(adventure.StringMessage("d"))
-        msg_list.push(adventure.StringMessage("e"))
+        msg_list.push(messages.StringMessage("a"))
+        msg_list.push(messages.StringMessage("b"))
+        msg_list.push(messages.StringMessage("c"))
+        msg_list.push(messages.StringMessage("d"))
+        msg_list.push(messages.StringMessage("e"))
 
         self.assertEqual(msg_list.length(), 5)
         popped = msg_list.pop()
@@ -59,12 +61,12 @@ class MessageListTests(unittest.TestCase):
         """
         MessageList should not work with bad index arguments.
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
 
         # Adds 3 Message objects to the list.
-        msg_list.push(adventure.StringMessage("a"))
-        msg_list.push(adventure.StringMessage("b"))
-        msg_list.push(adventure.StringMessage("c"))
+        msg_list.push(messages.StringMessage("a"))
+        msg_list.push(messages.StringMessage("b"))
+        msg_list.push(messages.StringMessage("c"))
 
         self.assertEqual(msg_list.length(), 3)
         self.assertRaises(IndexError, msg_list.pop, 3)
@@ -74,12 +76,12 @@ class MessageListTests(unittest.TestCase):
         """
         MessageList should work with good index arguments
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
 
         # Adds 3 Message objects to the list.
-        msg_list.push(adventure.StringMessage("a"))
-        msg_list.push(adventure.StringMessage("b"))
-        msg_list.push(adventure.StringMessage("c"))
+        msg_list.push(messages.StringMessage("a"))
+        msg_list.push(messages.StringMessage("b"))
+        msg_list.push(messages.StringMessage("c"))
 
         self.assertEqual(msg_list.length(), 3)
         self.assertEqual("b", msg_list.pop(1).msg)
@@ -90,11 +92,11 @@ class MessageListTests(unittest.TestCase):
         """
         MessageList should be iterable.
         """
-        msg_list = adventure.MessageList()
+        msg_list = messages.MessageList()
 
         # Adds 3 Message objects to the list.
-        msg_list.push(adventure.StringMessage("a"))
-        msg_list.push(adventure.StringMessage("b"))
-        msg_list.push(adventure.StringMessage("c"))
+        msg_list.push(messages.StringMessage("a"))
+        msg_list.push(messages.StringMessage("b"))
+        msg_list.push(messages.StringMessage("c"))
 
         self.assertEqual(["ab", "bb", "cb"], [x.msg + "b" for x in msg_list])

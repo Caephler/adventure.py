@@ -5,7 +5,7 @@ Tests for Message
 """
 
 import unittest
-import adventure
+import messages
 
 
 class MessageTests(unittest.TestCase):
@@ -16,7 +16,7 @@ class MessageTests(unittest.TestCase):
 
     def test_message_is_abstract_class(self):
         """
-        Message is an abstract class; should not be able to call any methods on it.
+        Message methods should not work as it is an abstract class
         """
-        msg = adventure.Message()
+        msg = messages.Message()
         self.assertRaises(NotImplementedError, msg.print)
